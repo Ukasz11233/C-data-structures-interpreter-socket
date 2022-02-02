@@ -20,7 +20,7 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    client.sin_addr.s_addr = inet_addr("192.168.43.201");
+    client.sin_addr.s_addr = inet_addr("10.204.32.206");  // tutaj wpisz swoj adres ip
     client.sin_port = htons(8520);
     client.sin_family = AF_INET;
 
@@ -32,8 +32,8 @@ int main(void)
     }
 
     printf("Connected.\n");
-
-    while(counter < 4)
+    int result;
+    while(counter < 5)
     {
         if(recv(socket_desc, array, sizeof(array), 0) < 0)
         {
@@ -42,6 +42,25 @@ int main(void)
         }
 
         Print_array(array);
+        result = check(array);
+        printf("\n%d", result);
+
+        if (result == MINIMUM)
+        {
+            printf("WYGRALES choc to niemozliwe..!\n");
+            close(socket_desc);
+            break;
+        }
+        else if (result == MAXIMUM)
+        {
+            system("clear");
+            Print_array(array);
+            printf("PRZEGRANA!\n");
+            send(socket_desc, xy, sizeof(xy), 0);
+            close(socket_desc);
+            break;
+        }
+
         printf("Podaj wspolrzedne x i y: ");
         input_counter = 0;
         while((ch = getchar()) != EOF && input_counter < 2)
@@ -72,14 +91,9 @@ int main(void)
             printf("XY send failure.");
             exit(EXIT_FAILURE);
         }
-
         counter++;
     }
-    if(recv(socket_desc, array, sizeof(array), 0) < 0)
-    {
-        printf("Error while receiving array.");
-        exit(EXIT_FAILURE);
-    }
+    array[xy[0]][xy[1]] = 'o';
     Print_array(array);
     printf("Game over");
     close(socket_desc);

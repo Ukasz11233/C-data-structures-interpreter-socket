@@ -27,7 +27,7 @@ int main(void)
     struct sockaddr_in server, client;
 
     server.sin_port = htons(8520);
-    server.sin_addr.s_addr = inet_addr("192.168.43.201");
+    server.sin_addr.s_addr = inet_addr("10.204.32.206");  //tutaj wpisz swoj adres ip
     server.sin_family = AF_INET;
 
     if(bind(socket_desc, (struct sockaddr *) &server, sizeof server) < 0)
@@ -48,7 +48,7 @@ int main(void)
     while((new_socket = accept(socket_desc, (struct sockaddr *) &client, (socklen_t *) &c)))
     {
         printf("Connection accepted\n");
-        while(counter < 4)
+        while(counter < 5)
         {
             if (send(new_socket, array, sizeof(array), 0) < 0) {
                 printf("Send array failure\n");
@@ -65,28 +65,6 @@ int main(void)
             array[xy[0]][xy[1]] = 'o';
             result = generator(array, 10, &x, &y);
             array[x][y] = 'x';
-            /*
-            if (result == MINIMUM)
-            {
-                printf("WYGRALES!\n");
-                close(new_socket);
-            }
-            else if (result == MAXIMUM)
-            {
-                system("clear");
-                Print_array(array);
-                printf("PRZEGRANA!\n");
-                close(new_socket);
-            }
-            else if(counter++ >= 3)
-            {
-                system("clear");
-                Print_array(array);
-                printf("Nikt nie wygral\n");
-                close(new_socket);
-            }
-            */
-            //system("clear");
             counter++;
         }
         if (send(new_socket, array, sizeof(array), 0) < 0) {
